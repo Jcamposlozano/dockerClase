@@ -1,0 +1,43 @@
+version: '2.1'
+services: 
+    db:
+        container_name: db_server
+        image: mysql:8
+        environment: 
+            MYSQL_ROOT_PASSWORD: jc
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin
+        volumes:
+            - "/home/user/ArchivosPc/Jc/Universidad/Informatica 2/TareaDocker/dataBase:/var/lib/mysql"
+        ports:
+            - "3306:3306"
+        networks: 
+         vpcbr:
+           ipv4_address: "172.20.0.3"           
+    
+    jenkins:
+        container_name: jenkins
+        image: jenkins/jenkins
+        volumes:
+            - "/home/user/ArchivosPc/Jc/Universidad/Informatica 2/TareaDocker/Jenkins:/var/jenkins_home"
+        ports:
+          - "8080:8080"   
+
+    modelo:
+        container_name: modelo
+        build: 
+            context: ./modelo
+            dockerfile: Dockerfile
+        ports:
+            - "4050:4050"
+        networks: 
+          vpcbr:
+            ipv4_address: "172.20.0.2"    
+                  
+networks: 
+  vpcbr:
+    driver: bridge
+    ipam:
+     config: 
+       - subnet: "172.20.0.0/24"
+         gateway: "172.20.0.1"
